@@ -12,7 +12,7 @@ import {
   staticFile,
   useVideoConfig,
 } from "remotion";
-import { FRAMES_PER_PHOTO } from "./constants";
+import { FRAMES_PER_ANIMATION, FRAMES_PER_PHOTO } from "./constants";
 import { TransitionSeries, linearTiming } from "@remotion/transitions";
 import { slide } from "@remotion/transitions/slide";
 import { fade } from "@remotion/transitions/fade";
@@ -120,7 +120,7 @@ const MyComp: React.FC = () => {
           </TransitionSeries.Sequence>
           <TransitionSeries.Transition
             presentation={getRandomTransition()}
-            timing={linearTiming({ durationInFrames: 30 })}
+            timing={linearTiming({ durationInFrames: FRAMES_PER_ANIMATION })}
           />
         </>
       ))}
