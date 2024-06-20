@@ -3,17 +3,19 @@ import { useCallback, useEffect, useState } from "react";
 import {
   AbsoluteFill,
   Img,
-  Sequence,
   StaticFile,
   continueRender,
   delayRender,
   getStaticFiles,
   random,
   staticFile,
-  useVideoConfig,
 } from "remotion";
 import { FRAMES_PER_ANIMATION, FRAMES_PER_PHOTO } from "./constants";
-import { TransitionSeries, linearTiming } from "@remotion/transitions";
+import {
+  TransitionSeries,
+  linearTiming,
+  springTiming,
+} from "@remotion/transitions";
 import { slide } from "@remotion/transitions/slide";
 import { fade } from "@remotion/transitions/fade";
 import { wipe } from "@remotion/transitions/wipe";
@@ -34,11 +36,12 @@ const transitions = [
   {
     transition: slide,
     directions: slideDirections,
+    timing: springTiming,
   },
-  { transition: fade },
-  { transition: wipe, directions: wipeDirections },
-  { transition: flip, directions: flipDirections },
-  { transition: clockWipe, requiresDimensions: true },
+  { transition: fade, timing: linearTiming },
+  { transition: wipe, directions: wipeDirections, timing: linearTiming },
+  { transition: flip, directions: flipDirections, timing: springTiming },
+  { transition: clockWipe, requiresDimensions: true, timing: linearTiming },
 ];
 
 const shuffle = <T,>(array: T[]) => {
@@ -66,11 +69,19 @@ const getRandomTransition = () => {
     randomTransition.directions?.[
       Math.floor(random(null) * randomTransition.directions.length)
     ];
-  if (randomDirection)
-    return (randomTransition.transition as any)({ direction: randomDirection });
-  if (randomTransition.requiresDimensions)
-    return (randomTransition.transition as any)({ width: 1920, height: 1080 });
-  return (randomTransition.transition as any)();
+  const presentation = randomDirection
+    ? (randomTransition.transition as any)({ direction: randomDirection })
+    : randomTransition.requiresDimensions
+      ? (randomTransition.transition as any)({ width: 1920, height: 1080 })
+      : (randomTransition.transition as any)();
+  return (
+    <TransitionSeries.Transition
+      presentation={presentation}
+      timing={randomTransition.timing({
+        durationInFrames: FRAMES_PER_ANIMATION,
+      })}
+    />
+  );
 };
 
 let photos = getStaticFiles();
@@ -118,10 +129,7 @@ const MyComp: React.FC = () => {
               </div>
             </AbsoluteFill>
           </TransitionSeries.Sequence>
-          <TransitionSeries.Transition
-            presentation={getRandomTransition()}
-            timing={linearTiming({ durationInFrames: FRAMES_PER_ANIMATION })}
-          />
+          {getRandomTransition()}
         </>
       ))}
     </TransitionSeries>
