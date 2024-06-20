@@ -50,7 +50,7 @@ const shuffle = <T,>(array: T[]) => {
     randomIndex;
 
   while (currentIndex !== 0) {
-    randomIndex = Math.floor(random("who") * currentIndex);
+    randomIndex = Math.floor(random("grad photos") * currentIndex);
     currentIndex -= 1;
 
     // And swap it with the current element.
@@ -62,12 +62,14 @@ const shuffle = <T,>(array: T[]) => {
   return array;
 };
 
-const getRandomTransition = () => {
+const getRandomTransition = (seed: number) => {
   const randomTransition =
-    transitions[Math.floor(random("is") * transitions.length)];
+    transitions[Math.floor(random(seed) * transitions.length)];
   const randomDirection =
     randomTransition.directions?.[
-      Math.floor(random("it?") * randomTransition.directions.length)
+      Math.floor(
+        random(seed + photos.length) * randomTransition.directions.length
+      )
     ];
   const presentation = randomDirection
     ? (randomTransition.transition as any)({ direction: randomDirection })
@@ -129,7 +131,7 @@ const MyComp: React.FC = () => {
               </div>
             </AbsoluteFill>
           </TransitionSeries.Sequence>
-          {getRandomTransition()}
+          {getRandomTransition(i)}
         </>
       ))}
     </TransitionSeries>
