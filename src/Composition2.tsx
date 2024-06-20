@@ -50,7 +50,7 @@ const shuffle = <T,>(array: T[]) => {
     randomIndex;
 
   while (currentIndex !== 0) {
-    randomIndex = Math.floor(random(null) * currentIndex);
+    randomIndex = Math.floor(random("who") * currentIndex);
     currentIndex -= 1;
 
     // And swap it with the current element.
@@ -64,10 +64,10 @@ const shuffle = <T,>(array: T[]) => {
 
 const getRandomTransition = () => {
   const randomTransition =
-    transitions[Math.floor(random(null) * transitions.length)];
+    transitions[Math.floor(random("is") * transitions.length)];
   const randomDirection =
     randomTransition.directions?.[
-      Math.floor(random(null) * randomTransition.directions.length)
+      Math.floor(random("it?") * randomTransition.directions.length)
     ];
   const presentation = randomDirection
     ? (randomTransition.transition as any)({ direction: randomDirection })
